@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Welcome to Vue</title>
+  <script src="https://unpkg.com/vue"></script>
+  <style>
+    #list {
+      width: 400px;
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+    #list th,
+    #list td {
+      border: 1px solid black;
+      text-align: center;
+    }
+
+    #list>thead>tr {
+      color: white;
+      background-color: gray;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.auto.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/vue"></script>
+</head>
+
+<body>
+  <div id="app">
+    <input type="text" id="search" name="search" v-model="searchData">
+    <h3>{{textArea}}</h3>
+    <table id="list">
+      <thead>
+        <tr>
+          <td>no</td>
+          <td>name</td>
+          <td>tel</td>
+          <td>address</td>
+          <td>photo</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="rd in resultData">
+          <td>{{rd.no}}</td>
+          <td>{{rd.name}}</td>
+          <td>{{rd.tel}}</td>
+          <td>{{rd.address}}</td>
+          <td>{{rd.photo}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        contact: "",
+        searchData: "",
+        textArea: "",
+        resultData: []
+      },
+      methods: {
+        getData: _.debounce(
+          function (data) {
+            if (data.length < 2) {
+              this.textArea = "검색어는 2글자 이상";
+              return;
+            } else {
+              var vm = this;
+              axios.get('http://sample.bmaster.kro.kr/contacts/search/' + data)
+                .then(
+                  function (response) {
+                    if(response.data.length > 0) {
+                      vm.resultData = response.data;
+                      vm.textArea = "";
+                    } else {
+                      vm.textArea = "검색결과 없음";
+                      return;
+                    }
+                  }
+                )
+                .catch(
+                  function (err) {
+                    vm.resultData = err;
+                    return;
+                  }
+                )
+            }
+          }, 500
+        )
+      },
+      watch: {
+        searchData: function (data) {
+          this.textArea = "데이터 조회중...";
+          this.getData(data);
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

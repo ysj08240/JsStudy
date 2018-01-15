@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome to Vue</title>
+  <script src="https://unpkg.com/vue"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
+</head>
+<body>
+  <div id="counter">
+    <button type="button" class="btn-btn-primary" @click="calCnt('plus')">증가</button>
+    <button type="button" class="btn-btn-danger"@click="calCnt('minus')">감소</button>
+    <h1>{{cnt}}</h1>
+  </div>
+
+  <script>
+    var counter = new Vue({
+      el: '#counter',
+      data: {
+        cnt : 0
+      },
+      methods: {
+        calCnt: function (key) {
+          console.log(this.cnt);
+          if(key == "plus"){
+            this.cnt = this.cnt + 1;
+          }else {
+            this.cnt = this.cnt - 1;
+          }
+        }
+      }
+    })
+  </script>
+</body>
+</html>
